@@ -6,9 +6,12 @@ int main(){
     std::cout << "Populating Data Structures..." << std::endl;
     auto start = std::chrono::high_resolution_clock::now(); //starting clock
 
+    //temp placeholder
     for (int i = 0; i < 100000; i++) {
         int val = 0;
     }
+
+    loadTrie();
     //Load Trie Data Structure
 
 
@@ -29,5 +32,12 @@ int main(){
 
 
 
+
+
+
     return 0;
+}
+
+void loadTrie() {
+    for ()
 }
