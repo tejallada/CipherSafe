@@ -16,3 +16,12 @@ class Node {
             this -> value = value;
         }
 };
+
+
+class HashMap {
+    private:
+        int numElements;
+        int tableSize;
+        vector<list<Node> > table;
+        hash<string> passwordHash;
+};
