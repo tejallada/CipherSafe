@@ -24,4 +24,12 @@ class HashMap {
         int tableSize;
         vector<list<Node> > table;
         hash<string> passwordHash;
+
+        int hashingFunction(string& key) {
+            return passwordHash(key) % tableSize;
+        }
+
+        void resizeTable() {
+            
+        }
 };
