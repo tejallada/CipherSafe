@@ -89,4 +89,13 @@ class HashMap {
             bucket.emplace_back(key, value);
             numElements++;
         }
+
+        int search(string& key) {
+            int index = hashingFunction(key);
+            list<Node>& bucket = table[index];
+            
+            for(Node&node : bucket) {
+                if(node.key == key) return node.value;
+            }
+        }
 };
