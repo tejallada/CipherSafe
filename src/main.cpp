@@ -48,8 +48,8 @@ void PrintMainMenu() {
            "=========================\n"
            "1. Check Password Strength\n"
            "2. Generate New Password\n"
-           "4. Display Statistics\n"
-           "6. Exit\n"
+           "3. Display Statistics\n"
+           "4. Exit\n"
            "=========================\n"
            "Enter your choice:";
 
@@ -74,14 +74,27 @@ int main(){
 
     bool exit = false;
 
+    //Program is running
     while(!exit) {
         PrintMainMenu();
-        exit = true;
+        string menuSelection;
+        cin >> menuSelection;
+        if (menuSelection == "1") {
+            cout << "Checking Password Strength" << endl;
+        }else if (menuSelection == "2") {
+            //StrengthCheck(); //check the strength of the password and explain why
+        }else if (menuSelection == "3") {
+            //ask for password length
+            //generate password
+        }else if (menuSelection == "4") {
+            cout << "Thank you for using CipherSafe";
+            exit = true;    //exit program
+        }else {
+            cout << "Invalid input, please type only 1, 2, 3, or 4" << endl; //not a valid input
+        }
+
+
     }
-
-
-
-
     return 0;
 }
 
