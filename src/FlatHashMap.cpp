@@ -90,12 +90,13 @@ class HashMap {
             numElements++;
         }
 
-        int search(string& key) {
+        bool search(string& key) {
             int index = hashingFunction(key);
             list<Node>& bucket = table[index];
             
             for(Node&node : bucket) {
-                if(node.key == key) return node.value;
+                if(node.key == key) return true;
             }
+            return false;
         }
 };
