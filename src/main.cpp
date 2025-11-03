@@ -46,24 +46,15 @@ int main(){
 
     //Populate the 2 data structures (trie and HashMap)
     std::cout << "Populating Data Structures..." << std::endl;
+
     auto start = std::chrono::high_resolution_clock::now(); //starting clock
-
-    loadTrie();
-    //Load Trie Data Structure
-
-
+    loadTrie(); //Load Trie Data Structure
     auto end = std::chrono::high_resolution_clock::now();//stoping clock
     std::chrono::duration<double> duration = end - start;
     std::cout << "Time to load Trie: " << duration.count() << " seconds" << std::endl;
 
-
     start = std::chrono::high_resolution_clock::now(); //starting clock
-
-
-    //Load HashMap Data Structure
-    loadHashMap();
-
-
+    loadHashMap(); //Load HashMap Data Structure
     end = std::chrono::high_resolution_clock::now();//stoping clock
     duration = end - start;
     std::cout << "Time to load HashMap: " << duration.count() << " seconds" << std::endl;
