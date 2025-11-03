@@ -57,4 +57,11 @@ class HashMap {
                 }
             }
         }
+
+    public:
+        HashMap(int startingSize = 5) {
+            tableSize = startingSize;
+            numElements = 0;
+            table.resize(tableSize);
+        }
 };
