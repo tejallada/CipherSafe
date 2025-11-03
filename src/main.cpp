@@ -6,6 +6,7 @@
 
 using namespace std;
 HashMap myHashMap; //Actual hashmap we are calling
+Trie myTrie;
 vector<string> passwords; //filler for Trie
 
 void LoadTrie() {
@@ -42,12 +43,20 @@ void LoadHashMap(HashMap& dict) {
 void StrengthCheck(string& userPassword) {
     string weakReason = "";
     string strength = "Strong";
+    bool checkTrie = true;
     if (myHashMap.search(userPassword)) {
-
-        //check the trie after this
-
+        weakReason += "Password found in common dataset";
+        strength = "Weak";
         cout << "Password found." << endl;
-    } else if (userPassword.length() < 5) {
+        checkTrie = false;
+    } else if(checkTrie){
+        string substringPass = userPassword;
+        for(int i = 0; i < userPassword.length(); i++){
+            substringPass = substringPass(1);
+            myTrie.search(substringPass);
+        }
+
+    }else if (userPassword.length() < 5) {
         strength = "Weak";
         weakReason += "Too short of a password\n";
     }else {
@@ -78,14 +87,14 @@ int main(){
     auto start = std::chrono::high_resolution_clock::now(); //starting clock
     LoadTrie(); //Load Trie Data Structure
     auto end = std::chrono::high_resolution_clock::now();//stoping clock
-    std::chrono::duration<double> duration = end - start;
-    std::cout << "Time to load Trie: " << duration.count() << " seconds" << std::endl;
+    std::chrono::duration<double> triePopulationTime = end - start;
+    std::cout << "Time to load Trie: " << triePopulationTime.count() << " seconds" << std::endl;
 
     start = std::chrono::high_resolution_clock::now(); //starting clock
     LoadHashMap(myHashMap); //Load HashMap Data Structure
     end = std::chrono::high_resolution_clock::now();//stoping clock
-    duration = end - start;
-    std::cout << "Time to load HashMap: " << duration.count() << " seconds" << std::endl;
+    std::chrono::duration<double> hashMapPopulationTime = end - start;
+    std::cout << "Time to load HashMap: " << hashMapPopulationTime.count() << " seconds" << std::endl;
 
     bool exit = false;
 
@@ -95,15 +104,21 @@ int main(){
         string menuSelection;
         cin >> menuSelection;
         if (menuSelection == "1") {
-            cout << "Checking Password Strength" << endl;
-        }else if (menuSelection == "2") {
             cout << "Enter password: " << endl;
             string usrPass;
             cin >> usrPass;
+            cout << "Checking Password Strength..." << endl;
             StrengthCheck(usrPass); //check the strength of the password and explain why
-        }else if (menuSelection == "3") {
+        }else if (menuSelection == "2") {
             //ask for password length
             //generate password
+        }else if (menuSelection == "3") {
+            //Print Stats:
+            /*
+            HashMap vs Trie search time difference
+            triePopulationTime.count()
+            hashMapPopulationTime.count()
+            */
         }else if (menuSelection == "4") {
             cout << "Thank you for using CipherSafe";
             exit = true;    //exit program
