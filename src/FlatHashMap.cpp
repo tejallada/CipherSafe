@@ -69,4 +69,20 @@ class HashMap {
             if(tableSize == 0) return 0.0f;
             else return (float)numElements / tableSize;
         }
+
+        void Insert(string& key, int value) {
+            if(getLoadFactor() > 0.75) resizeTable();
+
+            int index = hashingFunction(key);
+            list<Node>& bucket = table[index];
+
+            for(Node& node : bucket) {
+                if(node.key == key) {
+                    node.value = value;
+                    return;
+                }
+            }
+            bucket.emplace_back(key, value);
+            numElements++;
+        }
 };
