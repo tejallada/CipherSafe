@@ -23,16 +23,30 @@ void loadTrie() {
 
 }
 
+void loadHashMap() {
+    ifstream file("Data/rockyou.txt");
+    vector<string> passwords;
+    string line;
+
+    if (!file.is_open()) {
+        cerr << "Error: could not open file." << endl;
+    }
+
+    while (getline(file, line)) {
+        passwords.push_back(line);
+    }
+
+    file.close();
+
+    cout << "Loaded " << passwords.size() << " passwords." << endl;
+    cout << "First password: " << passwords[0] << endl;
+}
+
 int main(){
 
     //Populate the 2 data structures (trie and HashMap)
     std::cout << "Populating Data Structures..." << std::endl;
     auto start = std::chrono::high_resolution_clock::now(); //starting clock
-
-    //temp placeholder
-    for (int i = 0; i < 100000; i++) {
-        int val = 0;
-    }
 
     loadTrie();
     //Load Trie Data Structure
@@ -47,6 +61,7 @@ int main(){
 
 
     //Load HashMap Data Structure
+    loadHashMap();
 
 
     end = std::chrono::high_resolution_clock::now();//stoping clock
