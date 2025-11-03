@@ -1,8 +1,11 @@
 #include <iostream>
 #include <chrono> //timer
 #include <fstream>
-using namespace std;
+#include "FlatHashMap.cpp"
+#include "FlatTrie.cpp"
 
+using namespace std;
+HashMap myHashMap;
 void LoadTrie() {
     ifstream file("Data/rockyou.txt");
     vector<string> passwords;
@@ -23,7 +26,7 @@ void LoadTrie() {
 
 }
 
-void LoadHashMap() {
+void LoadHashMap(HashMap& dict) {
     ifstream file("Data/rockyou.txt");
     vector<string> passwords;
     string line;
@@ -33,13 +36,13 @@ void LoadHashMap() {
     }
 
     while (getline(file, line)) {
-        passwords.push_back(line);
+        if (!line.empty()) dict.Insert(line, 1);
     }
 
     file.close();
 
-    cout << "Loaded " << passwords.size() << " passwords." << endl;
-    cout << "First password: " << passwords[0] << endl;
+    cout << "Loaded " << dict.getNumElements() << " passwords." << endl;
+    cout << "First password: "  << endl;
 }
 
 void PrintMainMenu() {
@@ -67,7 +70,7 @@ int main(){
     std::cout << "Time to load Trie: " << duration.count() << " seconds" << std::endl;
 
     start = std::chrono::high_resolution_clock::now(); //starting clock
-    LoadHashMap(); //Load HashMap Data Structure
+    LoadHashMap(myHashMap); //Load HashMap Data Structure
     end = std::chrono::high_resolution_clock::now();//stoping clock
     duration = end - start;
     std::cout << "Time to load HashMap: " << duration.count() << " seconds" << std::endl;
