@@ -64,4 +64,9 @@ class HashMap {
             numElements = 0;
             table.resize(tableSize);
         }
+
+        float getLoadFactor() {
+            if(tableSize == 0) return 0.0f;
+            else return (float)numElements / tableSize;
+        }
 };
