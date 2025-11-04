@@ -3,28 +3,24 @@
 #include <string>
 #include <list>
 #include <functional>
+#include <unordered_map>
 using namespace std;
 
 
 class NodeTrie {
     public:
         bool isEnd;
-
-        NodeTrie* children[26];
+        //switched to unordered map for special characters
+        unordered_map<char, NodeTrie*> children;
 
         NodeTrie() {
             isEnd = false;
-
-            for (int i = 0; i<26; i++) {
-                children[i] = nullptr;
-            }
         }
         ~NodeTrie() {
-            for (int i = 0; i < 26; i++) {
-                delete children[i];
-                children[i] = nullptr;
-
+            for (auto &each : children) {
+                delete each.second;
             }
+            children.clear();
         }
     
 };
@@ -52,13 +48,10 @@ class Trie {
             NodeTrie* node = root;
 
             for (char lc : password) {
-                lc = tolower(lc);
-
-                if (node->children[lc-'a'] == nullptr) {
-                    node->children[lc-'a'] = new NodeTrie();
-
+                if (node->children.count(lc) == false) {
+                    node->children[lc] = new NodeTrie();
                 }
-                node = node->children[lc-'a'];
+                node = node->children[lc];
 
             }
             if (node->isEnd == false) {
@@ -72,12 +65,10 @@ class Trie {
             NodeTrie* node = root;
 
             for (char lc : password) {
-                lc = tolower(lc);
-
-                if (node->children[lc-'a'] == nullptr) {
+                if (node->children.count(lc) == false)  {
                     return false;
                 }
-                node = node->children[lc-'a'];
+                node = node->children[lc];
             }
             return node->isEnd;
         }
