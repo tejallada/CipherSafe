@@ -47,6 +47,7 @@ class Trie {
         }
 
         void insert(const string& password) {
+
             
             NodeTrie* node = root;
 
@@ -66,4 +67,23 @@ class Trie {
                 numElements++;
             }
         }
+
+        bool search(const string& password) {
+            NodeTrie* node = root;
+
+            for (char lc : password) {
+                lc = tolower(lc);
+
+                if (node->children[lc-'a'] == nullptr) {
+                    return false;
+                }
+                node = node->children[lc-'a'];
+            }
+            return node->isEnd;
+        }
+
+        int getSize() const {
+            return numElements;
+        }
+
 };
