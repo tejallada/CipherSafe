@@ -3,13 +3,13 @@
 #include <fstream>
 #include "FlatHashMap.cpp"
 #include "FlatTrie.cpp"
+#include <cstdlib>
 
 using namespace std;
 HashMap myHashMap; //Actual hashmap we are calling
 Trie myTrie;
-vector<string> passwords; //filler for Trie
 
-void LoadTrie() {
+void LoadTrie(Trie& _Trie) {
     ifstream file("Data/rockyou.txt");
     string line;
 
@@ -18,12 +18,12 @@ void LoadTrie() {
     }
 
     while (getline(file, line)) {
-        passwords.push_back(line);
+        if (!line.empty()) _Trie.insert(line);
     }
 
     file.close();
-
-    cout << "Loaded " << passwords.size() << " passwords." << endl;
+    int size = _Trie.getSize();
+    cout << "Loaded " << size << " passwords." << endl;
 
 }
 
@@ -43,23 +43,29 @@ void LoadHashMap(HashMap& dict) {
 void StrengthCheck(string& userPassword) {
     string weakReason = "";
     string strength = "Strong";
-    bool checkTrie = true;
+    bool inTrie = false;
+        string substringPass = userPassword;
+        for(int i = 0; i < userPassword.length(); i++){
+            substringPass = substringPass.substr(1);
+            cout << "Substring pass: " << substringPass << endl;
+            cout << myTrie.search(substringPass) << endl;
+            if (myTrie.search(substringPass)) {
+                cout << "Found " << endl;
+                weakReason += "Contains the derivitive of a common password";
+                strength = "Semi-Weak";
+                break;
+
+            }
+        }
+
     if (myHashMap.search(userPassword)) {
         weakReason += "Password found in common dataset";
         strength = "Weak";
         cout << "Password found." << endl;
-        checkTrie = false;
-    } else if(checkTrie){
-        string substringPass = userPassword;
-        for(int i = 0; i < userPassword.length(); i++){
-            substringPass = substringPass(1);
-            myTrie.search(substringPass);
-        }
-
-    }else if (userPassword.length() < 5) {
+    } else if (userPassword.length() < 5) {
         strength = "Weak";
         weakReason += "Too short of a password\n";
-    }else {
+    }else if (!inTrie){
         cout << "you have a strong password" << endl;
     }
     cout << "Password Strength: " << strength << endl;
@@ -85,7 +91,7 @@ int main(){
     std::cout << "Populating Data Structures..." << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now(); //starting clock
-    LoadTrie(); //Load Trie Data Structure
+    LoadTrie(myTrie); //Load Trie Data Structure
     auto end = std::chrono::high_resolution_clock::now();//stoping clock
     std::chrono::duration<double> triePopulationTime = end - start;
     std::cout << "Time to load Trie: " << triePopulationTime.count() << " seconds" << std::endl;
@@ -110,11 +116,25 @@ int main(){
             cout << "Checking Password Strength..." << endl;
             StrengthCheck(usrPass); //check the strength of the password and explain why
         }else if (menuSelection == "2") {
-            //ask for password length
-            //generate password
+            int passLength;
+            cout << "Enter Password Length: " << endl;
+            cin >> passLength;
+            cout << "Generating Password..." << endl;
+            string newPassword;
+            for (int i = 0; i < passLength; i++) {
+                if (rand()%2 == 1) {
+                    char randomLowercaseLetter = 'a' + (rand() % 26);
+                    newPassword += randomLowercaseLetter;
+                }else {
+                    char randomUppercaseLetter = 'A' + (rand() % 26);
+                    newPassword += randomUppercaseLetter;
+                }
+                cout << "New Password: " << newPassword << endl;
+            }
         }else if (menuSelection == "3") {
             //Print Stats:
             /*
+             Average Hasmap vs average Trie Time difference
             HashMap vs Trie search time difference
             triePopulationTime.count()
             hashMapPopulationTime.count()
