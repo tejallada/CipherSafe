@@ -8,9 +8,8 @@
 using namespace std;
 HashMap myHashMap; //Actual hashmap we are calling
 Trie myTrie;
-vector<string> passwords; //filler for Trie
 
-void LoadTrie() {
+void LoadTrie(Trie& _Trie) {
     ifstream file("Data/rockyou.txt");
     string line;
 
@@ -19,12 +18,12 @@ void LoadTrie() {
     }
 
     while (getline(file, line)) {
-        passwords.push_back(line);
+        if (!line.empty()) _Trie.insert(line);
     }
 
     file.close();
-
-    cout << "Loaded " << passwords.size() << " passwords." << endl;
+    int size = _Trie.getSize();
+    cout << "Loaded " << size << " passwords." << endl;
 
 }
 
@@ -49,9 +48,12 @@ void StrengthCheck(string& userPassword) {
         for(int i = 0; i < userPassword.length(); i++){
             substringPass = substringPass.substr(1);
             cout << "Substring pass: " << substringPass << endl;
+            cout << myTrie.search(substringPass) << endl;
             if (myTrie.search(substringPass)) {
-                weakReason = weakReason + "Contains the derivitive of a common password";
+                cout << "Found " << endl;
+                weakReason += "Contains the derivitive of a common password";
                 strength = "Semi-Weak";
+                break;
 
             }
         }
@@ -89,7 +91,7 @@ int main(){
     std::cout << "Populating Data Structures..." << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now(); //starting clock
-    LoadTrie(); //Load Trie Data Structure
+    LoadTrie(myTrie); //Load Trie Data Structure
     auto end = std::chrono::high_resolution_clock::now();//stoping clock
     std::chrono::duration<double> triePopulationTime = end - start;
     std::cout << "Time to load Trie: " << triePopulationTime.count() << " seconds" << std::endl;
