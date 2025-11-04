@@ -41,4 +41,29 @@ class Trie {
             numElements = 0;
 
         }
+        
+        ~Trie() {
+            delete root;
+        }
+
+        void insert(const string& password) {
+            
+            NodeTrie* node = root;
+
+            for (char lc : password) {
+                lc = tolower(lc);
+
+                if (node->children[lc-'a'] == nullptr) {
+                    node->children[lc-'a'] = new NodeTrie();
+
+                }
+                node = node->children[lc-'a'];
+
+            }
+            if (node->isEnd == false) {
+                node->isEnd = true;
+
+                numElements++;
+            }
+        }
 };
