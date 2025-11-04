@@ -3,6 +3,7 @@
 #include <fstream>
 #include "FlatHashMap.cpp"
 #include "FlatTrie.cpp"
+#include <cstdlib>
 
 using namespace std;
 HashMap myHashMap; //Actual hashmap we are calling
@@ -43,23 +44,26 @@ void LoadHashMap(HashMap& dict) {
 void StrengthCheck(string& userPassword) {
     string weakReason = "";
     string strength = "Strong";
-    bool checkTrie = true;
+    bool inTrie = false;
+        string substringPass = userPassword;
+        for(int i = 0; i < userPassword.length(); i++){
+            substringPass = substringPass.substr(1);
+            cout << "Substring pass: " << substringPass << endl;
+            if (myTrie.search(substringPass)) {
+                weakReason = weakReason + "Contains the derivitive of a common password";
+                strength = "Semi-Weak";
+
+            }
+        }
+
     if (myHashMap.search(userPassword)) {
         weakReason += "Password found in common dataset";
         strength = "Weak";
         cout << "Password found." << endl;
-        checkTrie = false;
-    } else if(checkTrie){
-        string substringPass = userPassword;
-        for(int i = 0; i < userPassword.length(); i++){
-            substringPass = substringPass(1);
-            myTrie.search(substringPass);
-        }
-
-    }else if (userPassword.length() < 5) {
+    } else if (userPassword.length() < 5) {
         strength = "Weak";
         weakReason += "Too short of a password\n";
-    }else {
+    }else if (!inTrie){
         cout << "you have a strong password" << endl;
     }
     cout << "Password Strength: " << strength << endl;
@@ -110,11 +114,25 @@ int main(){
             cout << "Checking Password Strength..." << endl;
             StrengthCheck(usrPass); //check the strength of the password and explain why
         }else if (menuSelection == "2") {
-            //ask for password length
-            //generate password
+            int passLength;
+            cout << "Enter Password Length: " << endl;
+            cin >> passLength;
+            cout << "Generating Password..." << endl;
+            string newPassword;
+            for (int i = 0; i < passLength; i++) {
+                if (rand()%2 == 1) {
+                    char randomLowercaseLetter = 'a' + (rand() % 26);
+                    newPassword += randomLowercaseLetter;
+                }else {
+                    char randomUppercaseLetter = 'A' + (rand() % 26);
+                    newPassword += randomUppercaseLetter;
+                }
+                cout << "New Password: " << newPassword << endl;
+            }
         }else if (menuSelection == "3") {
             //Print Stats:
             /*
+             Average Hasmap vs average Trie Time difference
             HashMap vs Trie search time difference
             triePopulationTime.count()
             hashMapPopulationTime.count()
