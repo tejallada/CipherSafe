@@ -3,11 +3,16 @@
 #include <fstream>
 #include "FlatHashMap.cpp"
 #include "FlatTrie.cpp"
-#include <cstdlib>
+#include <thread>
 
 using namespace std;
 HashMap myHashMap; //Actual hashmap we are calling
 Trie myTrie;
+std::chrono::duration<double> hashMapSearchTime;
+std::chrono::duration<double> trieSearchTime;
+
+int trieSearchCount = 0;
+int hashMapSearchCount = 0;
 
 void LoadTrie(Trie& _Trie) {
     ifstream file("Data/rockyou.txt");
@@ -40,28 +45,40 @@ void LoadHashMap(HashMap& dict) {
     cout << "Loaded " << dict.getNumElements() << " passwords." << endl;
 }
 
-void StrengthCheck(string& userPassword) {
+void StrengthCheck(string& userPassword, bool fullPassword = false) {
     string weakReason = "";
     string strength = "Strong";
+    int startingIndex = 0;
+    if (fullPassword) {
+        startingIndex = -1;
+    }
+
     bool inTrie = false;
         string substringPass = userPassword;
-        for(int i = 0; i < userPassword.length(); i++){
+        for(int i = startingIndex; i < userPassword.length(); i++){
             substringPass = substringPass.substr(1);
             cout << "Substring pass: " << substringPass << endl;
+            auto trieStart = std::chrono::high_resolution_clock::now();
             cout << myTrie.search(substringPass) << endl;
+            auto trieEnd = std::chrono::high_resolution_clock::now();//stoping clock
+            trieSearchTime += trieEnd - trieStart;
+            trieSearchCount += 1;
+
             if (myTrie.search(substringPass)) {
-                cout << "Found " << endl;
-                weakReason += "Contains the derivitive of a common password";
+                weakReason += "Contains the derivative of a common password\n";
                 strength = "Semi-Weak";
                 break;
 
             }
         }
 
+    auto hashMapStart = std::chrono::high_resolution_clock::now(); //starting clock
     if (myHashMap.search(userPassword)) {
-        weakReason += "Password found in common dataset";
+        auto hashMapEnd = std::chrono::high_resolution_clock::now();//stoping clock
+        hashMapSearchTime += hashMapEnd - hashMapStart;
+        hashMapSearchCount += 1;
+        weakReason += "Password found in common dataset\n";
         strength = "Weak";
-        cout << "Password found." << endl;
     } else if (userPassword.length() < 5) {
         strength = "Weak";
         weakReason += "Too short of a password\n";
@@ -69,11 +86,13 @@ void StrengthCheck(string& userPassword) {
         cout << "you have a strong password" << endl;
     }
     cout << "Password Strength: " << strength << endl;
-    cout << "Reason:\n" << weakReason << endl;
+    if (strength != "Strong") {
+        cout << "Reason:\n" << weakReason << endl;
+    }
 }
 
 void PrintMainMenu() {
-    cout<< "=========================\n"
+    cout<< "\n\n\n=========================\n"
            "CipherSafe Menu\n"
            "=========================\n"
            "1. Check Password Strength\n"
@@ -82,6 +101,10 @@ void PrintMainMenu() {
            "4. Exit\n"
            "=========================\n"
            "Enter your choice:";
+
+}
+
+void HashMapSearchTime() {
 
 }
 
@@ -109,8 +132,9 @@ int main(){
         PrintMainMenu();
         string menuSelection;
         cin >> menuSelection;
+        cout<<endl;
         if (menuSelection == "1") {
-            cout << "Enter password: " << endl;
+            cout << "Enter password: ";
             string usrPass;
             cin >> usrPass;
             cout << "Checking Password Strength..." << endl;
@@ -122,23 +146,27 @@ int main(){
             cout << "Generating Password..." << endl;
             string newPassword;
             for (int i = 0; i < passLength; i++) {
-                if (rand()%2 == 1) {
-                    char randomLowercaseLetter = 'a' + (rand() % 26);
-                    newPassword += randomLowercaseLetter;
-                }else {
+                if (rand()%4 == 1) {
                     char randomUppercaseLetter = 'A' + (rand() % 26);
                     newPassword += randomUppercaseLetter;
+                }else {
+                    char randomLowercaseLetter = 'a' + (rand() % 26);
+                    newPassword += randomLowercaseLetter;
                 }
-                cout << "New Password: " << newPassword << endl;
             }
+            cout << "New Password: " << newPassword << endl;
         }else if (menuSelection == "3") {
             //Print Stats:
             /*
-             Average Hasmap vs average Trie Time difference
-            HashMap vs Trie search time difference
-            triePopulationTime.count()
-            hashMapPopulationTime.count()
-            */
+            Average Hashmap vs Average Trie Time difference
+            HashMap vs Trie search time difference */
+            cout << "Trie Population Time: " << triePopulationTime.count() << endl;
+            cout << "Number of passwords in Trie: " << myTrie.getSize() << endl;
+            cout << "HashMap Population Time: " << hashMapPopulationTime.count() << endl;
+            cout << "Number of passwords in HashMap: " << myHashMap.getNumElements() << endl;
+            cout<<endl;
+            cout << "Hashmap Search Time: "<< hashMapSearchTime.count()/hashMapSearchCount << endl;
+            cout << "Trie Search Time: " << trieSearchTime.count()/trieSearchCount << endl;
         }else if (menuSelection == "4") {
             cout << "Thank you for using CipherSafe";
             exit = true;    //exit program
@@ -146,7 +174,7 @@ int main(){
             cout << "Invalid input, please type only 1, 2, 3, or 4" << endl; //not a valid input
         }
 
-
+        this_thread::sleep_for(std::chrono::seconds(4)); //delay the menu showing up for 4 seconds
     }
     return 0;
 }
