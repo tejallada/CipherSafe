@@ -57,17 +57,16 @@ void StrengthCheck(string& userPassword, bool fullPassword = false) {
         string substringPass = userPassword;
         for(int i = startingIndex; i < userPassword.length(); i++){
             substringPass = substringPass.substr(1);
-            cout << "Substring pass: " << substringPass << endl;
+
             auto trieStart = std::chrono::high_resolution_clock::now();
-            cout << myTrie.search(substringPass) << endl;
-            auto trieEnd = std::chrono::high_resolution_clock::now();//stoping clock
-            trieSearchTime += trieEnd - trieStart;
-            trieSearchCount += 1;
 
             if (myTrie.search(substringPass)) {
                 weakReason += "Contains the derivative of a common password\n";
                 strength = "Semi-Weak";
                 break;
+                auto trieEnd = std::chrono::high_resolution_clock::now();//stoping clock
+                trieSearchTime += trieEnd - trieStart;
+                trieSearchCount += 1;
 
             }
         }
