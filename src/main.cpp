@@ -63,10 +63,10 @@ void StrengthCheck(string& userPassword, bool fullPassword = false) {
             if (myTrie.search(substringPass)) {
                 weakReason += "Contains the derivative of a common password\n";
                 strength = "Semi-Weak";
-                break;
                 auto trieEnd = std::chrono::high_resolution_clock::now();//stoping clock
                 trieSearchTime += trieEnd - trieStart;
                 trieSearchCount += 1;
+                break;
 
             }
         }
