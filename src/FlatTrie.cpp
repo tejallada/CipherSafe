@@ -29,6 +29,7 @@ class Trie {
     private: 
         NodeTrie* root;
         int numElements;
+        string prevSearch;
 
     public:
 
@@ -63,11 +64,13 @@ class Trie {
 
         bool search(const string& password) {
             NodeTrie* node = root;
+            prevSearch = "";
 
             for (char lc : password) {
                 if (node->children.count(lc) == false)  {
                     return false;
                 }
+                prevSearch += lc;
                 node = node->children[lc];
             }
             return node->isEnd;
@@ -75,6 +78,9 @@ class Trie {
 
         int getSize() const {
             return numElements;
+        }
+    string getPrevSearch() {
+            return prevSearch;
         }
 
 };
