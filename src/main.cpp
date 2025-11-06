@@ -103,9 +103,6 @@ void PrintMainMenu() {
 
 }
 
-void HashMapSearchTime() {
-
-}
 
 int main(){
 
