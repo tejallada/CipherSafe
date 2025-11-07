@@ -34,3 +34,12 @@ TEST_CASE("Basic Tests", "[trie]") {
     }
 
 }
+TEST_CASE("Duplicate Insert", "[trie]") {
+    Trie trie;
+    trie.insert("hi");
+    REQUIRE(trie.getSize() == 1);
+
+    trie.insert("hi");
+    REQUIRE(trie.getSize() == 1);
+}
+
