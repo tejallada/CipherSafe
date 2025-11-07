@@ -8,6 +8,9 @@
 #include <list>
 #include <functional>
 #include <unordered_map>
+#include "../src/FlatTrie.cpp"
+#include "../src/FlatHashMap.cpp"
+
 
 void StrengthCheck(string& userPassword, bool fullPassword = false) {
     string weakReason = "";
