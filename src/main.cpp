@@ -54,6 +54,7 @@ void StrengthCheck(string& userPassword, bool fullPassword = false) {
     }
 
     bool inTrie = false;
+    if (userPassword.length() >= 5) {
         string substringPass = userPassword;
         for(int i = startingIndex; i < userPassword.length()-5; i++){
             substringPass = substringPass.substr(1);
@@ -70,6 +71,8 @@ void StrengthCheck(string& userPassword, bool fullPassword = false) {
 
             }
         }
+    }
+
 
     auto hashMapStart = std::chrono::high_resolution_clock::now(); //starting clock
     if (myHashMap.search(userPassword)) {
