@@ -55,7 +55,7 @@ void StrengthCheck(string& userPassword, bool fullPassword = false) {
 
     bool inTrie = false;
         string substringPass = userPassword;
-        for(int i = startingIndex; i < userPassword.length(); i++){
+        for(int i = startingIndex; i < userPassword.length()-5; i++){
             substringPass = substringPass.substr(1);
 
             auto trieStart = std::chrono::high_resolution_clock::now();
